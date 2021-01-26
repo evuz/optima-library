@@ -26,12 +26,10 @@ describe('ScoreboardService', () => {
   let service: ScoreboardService
 
   const subjects = {
-    events: new Subject<EventMatch>(),
-    matches: new Subject<Match>()
+    events: new Subject<EventMatch>()
   }
   const factory: MatchFactory = {
-    events$: subjects.events.asObservable(),
-    matches$: subjects.matches.asObservable()
+    events$: subjects.events.asObservable()
   }
 
   beforeEach(() => {
@@ -53,8 +51,7 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(match)
-    subjects.events.next({ match: match.id, type: EventType.Start })
+    subjects.events.next({ match: match, type: EventType.Start })
   })
 
   test('should save all matches', (done) => {
@@ -68,14 +65,27 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(firstMatch)
-    subjects.matches.next(secondMatch)
-    subjects.events.next({ match: firstMatch.id, type: EventType.Start })
-    subjects.events.next({ match: secondMatch.id, type: EventType.Start })
+    subjects.events.next({ match: firstMatch, type: EventType.Start })
+    subjects.events.next({ match: secondMatch, type: EventType.Start })
   })
 
-  test('should start with 0-0', (done) => {
+  test('should keep score when it is not empty', (done) => {
     const match = createMatch('RMA', 'FCB')
+    match.score = new Score({ home: 1, away: 2 })
+
+    service.update$.subscribe((matches) => {
+      const m = matches[0]
+      expect(m.score.home).toEqual(1)
+      expect(m.score.away).toEqual(2)
+      done()
+    })
+
+    subjects.events.next({ match: match, type: EventType.Start })
+  })
+
+  test('should init score at 0-0 when it is empty', (done) => {
+    const match = createMatch('RMA', 'FCB')
+    match.score = null
 
     service.update$.subscribe((matches) => {
       const m = matches[0]
@@ -84,8 +94,7 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(match)
-    subjects.events.next({ match: match.id, type: EventType.Start })
+    subjects.events.next({ match: match, type: EventType.Start })
   })
 
   test('should update home score', (done) => {
@@ -99,8 +108,7 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(match)
-    subjects.events.next({ match: match.id, type: EventType.HomeGoal })
+    subjects.events.next({ match: match, type: EventType.HomeGoal })
   })
 
   test('should update away score', (done) => {
@@ -114,8 +122,7 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(match)
-    subjects.events.next({ match: match.id, type: EventType.AwayGoal })
+    subjects.events.next({ match: match, type: EventType.AwayGoal })
   })
 
   test('should remove finish match', (done) => {
@@ -128,13 +135,11 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(match)
-    subjects.events.next({ match: match.id, type: EventType.Finish })
+    subjects.events.next({ match: match, type: EventType.Finish })
   })
 
-  test('should ignore event when match is unknown', (done) => {
+  test('should ignore event when match is empty', (done) => {
     const match = createMatch('RMA', 'FCB')
-    const unknownMatch = createMatch('SEV', 'BET')
 
     expect(match.score.home).toEqual(0)
 
@@ -144,8 +149,33 @@ describe('ScoreboardService', () => {
       done()
     })
 
-    subjects.matches.next(match)
-    subjects.events.next({ match: unknownMatch.id, type: EventType.Start })
-    subjects.events.next({ match: match.id, type: EventType.Start })
+    subjects.events.next({ match: null, type: EventType.Start })
+    subjects.events.next({ match: match, type: EventType.Start })
+  })
+
+  test('should add event even if it has not been started', (done) => {
+    const match = createMatch('RMA', 'FCB')
+
+    service.update$.subscribe((matches) => {
+      expect(matches.length).toEqual(1)
+      expect(matches[0]).toBe(match)
+      done()
+    })
+
+    subjects.events.next({ match: match, type: EventType.AwayGoal })
+  })
+
+  test('should throw error if event has been started twice', (done) => {
+    const match = createMatch('RMA', 'FCB')
+
+    service.update$.subscribe({
+      error: (error) => {
+        expect(new RegExp(match.id).exec(error)).toBeTruthy()
+        done()
+      }
+    })
+
+    subjects.events.next({ match: match, type: EventType.Start })
+    subjects.events.next({ match: match, type: EventType.Start })
   })
 })

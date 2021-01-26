@@ -9,6 +9,6 @@ export enum EventType {
 }
 
 export class EventMatch {
-  match: Match['id']
+  match: Match
   type: EventType
 }

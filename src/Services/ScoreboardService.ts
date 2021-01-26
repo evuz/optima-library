@@ -5,7 +5,6 @@ import { MatchFactory } from '../Factories/Match/MatchFactory'
 import { MatchCommand } from './MatchCommand/MatchCommand'
 
 export class ScoreboardService {
-  private matches = new Map<Match['id'], Match>()
   private scoreboard: Match[] = []
 
   private subscriptions: Subscription[] = []
@@ -18,19 +17,19 @@ export class ScoreboardService {
   constructor (private matchFactory: MatchFactory) {}
 
   run () {
-    this.subscriptions[0] = this.matchFactory.matches$.subscribe(match => {
-      this.matches.set(match.id, match)
-    })
-
     this.subscriptions[1] = this.matchFactory.events$.subscribe(event => {
-      const match = this.matches.get(event.match)
+      const { match } = event
       if (!match) {
         return
       }
 
-      const command = new MatchCommand(match, event.type)
-      this.scoreboard = command.execute(this.scoreboard)
-      this.subject.next(this.scoreboard)
+      try {
+        const command = new MatchCommand(match, event.type)
+        this.scoreboard = command.execute(this.scoreboard)
+        this.subject.next(this.scoreboard)
+      } catch (error) {
+        this.subject.error(error)
+      }
     })
   }
 
