@@ -20,7 +20,7 @@ describe('GetSummaryService', () => {
 
   test('should return first results', async () => {
     const matchSrv = new MatchService()
-    matchSrv.results = results
+    matchSrv.finished = results
     const service = new GetSummaryService(config, matchSrv)
 
     const summary = await service.execute()
@@ -29,7 +29,7 @@ describe('GetSummaryService', () => {
 
   test('should return second page', async () => {
     const matchSrv = new MatchService()
-    matchSrv.results = results
+    matchSrv.finished = results
     const service = new GetSummaryService(config, matchSrv)
 
     const summary = await service.execute(1)

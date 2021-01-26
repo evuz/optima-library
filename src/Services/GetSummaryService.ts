@@ -5,7 +5,7 @@ export class GetSummaryService {
   constructor (private config: Config, private matchSrv: MatchService) {}
 
   execute (page = 0) {
-    if (!this.matchSrv.results) {
+    if (!this.matchSrv.finished) {
       return Promise.resolve([])
     }
 
@@ -13,6 +13,6 @@ export class GetSummaryService {
     const firstElement = page * resultsPageSize
     const lastElement = firstElement + resultsPageSize
 
-    return Promise.resolve(this.matchSrv.results.slice(firstElement, lastElement))
+    return Promise.resolve(this.matchSrv.finished.slice(firstElement, lastElement))
   }
 }
