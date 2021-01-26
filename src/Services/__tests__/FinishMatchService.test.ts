@@ -35,6 +35,7 @@ describe('FinishMatchService', () => {
   beforeEach(() => {
     matchService = new MatchService()
     service = new FinishMatchService(matchService, factory)
+    service.run()
   })
 
   afterEach(() => {
