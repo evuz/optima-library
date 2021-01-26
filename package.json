@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "ts:check": "tsc --noEmit",
+    "ts:check:watch": "tsc --noEmit --watch",
     "test": "jest --silent",
     "test:watch": "jest --watch",
     "lint": "eslint ./src/**/*.ts"
@@ -32,7 +34,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm test"
+      "pre-push": "npm run ts:check && npm test"
     }
   },
   "lint-staged": {
