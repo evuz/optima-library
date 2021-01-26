@@ -8,11 +8,9 @@ import { MatchService } from './MatchService'
 export class FinishMatchService {
   private subscriptions: Subscription[] = []
 
-  constructor (private matchService: MatchService, private matchFactory: MatchFactory) {
-    this.run()
-  }
+  constructor (private matchService: MatchService, private matchFactory: MatchFactory) {}
 
-  private run () {
+  public run () {
     this.subscriptions[0] = this.matchFactory.events$.pipe(filter(ev => ev.type === EventType.Finish))
       .subscribe(ev => {
         this.matchService.addFinished(ev.match)
