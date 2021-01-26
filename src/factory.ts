@@ -1,4 +1,4 @@
-import { Config } from './Entities/Config'
+import { Config, createConfig } from './Entities/Config'
 import { DemoMatchFactory } from './Factories/Match/DemoMatchFactory'
 import { FinishMatchService } from './Services/FinishMatchService'
 import { GetSummaryService } from './Services/GetSummaryService'
@@ -20,10 +20,10 @@ export function createDomain (mode: DomainMode = 'demo') {
     throw Error(`mode ${mode} is not a valid mode`)
   }
 
-  const config: Config = {
+  const config: Config = createConfig({
     matchDuration: 3 * 60, // 3 min
     resultsPageSize: 10
-  }
+  })
   const matchGenerator = new RandomMathGeneratorStrategy(config)
   const matchResolver = new RandomMatchResolverStrategy(config)
 
