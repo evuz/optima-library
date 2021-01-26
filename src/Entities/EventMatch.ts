@@ -1,4 +1,5 @@
 import { Match } from './Match'
+import { updateClass } from '../Utils/updateClass'
 
 export enum EventType {
   AwayGoal,
@@ -11,4 +12,8 @@ export enum EventType {
 export class EventMatch {
   match: Match
   type: EventType
+
+  constructor (event: EventMatch) {
+    updateClass<EventMatch>(this, event)
+  }
 }
