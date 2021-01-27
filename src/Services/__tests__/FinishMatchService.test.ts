@@ -48,14 +48,4 @@ describe('FinishMatchService', () => {
 
     expect(matchService.finished).toEqual([match])
   })
-
-  test('should add the matches to the beginning of the array', () => {
-    const firstMatch = createMatch('MEX', 'CHI')
-    const secondMatch = createMatch('ESP', 'POR')
-
-    subjects.events.next({ type: EventType.Finish, match: firstMatch })
-    subjects.events.next({ type: EventType.Finish, match: secondMatch })
-
-    expect(matchService.finished).toEqual([secondMatch, firstMatch])
-  })
 })
