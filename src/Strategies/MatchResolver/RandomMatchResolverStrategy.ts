@@ -10,7 +10,7 @@ export class RandomMatchResolverStrategy implements MatchResolverStrategy {
 
   resolve (match: Match): ScheduledEvent[] {
     const events: ScheduledEvent[] = []
-    const interval = this.config.matchDuration / (RandomMatchResolverStrategy.numberActions + 1)
+    const interval = this.config.demo.matchDuration / (RandomMatchResolverStrategy.numberActions + 1)
 
     events.push(this.createStartEvent(match))
     events.push(this.createFinishEvent(match))
@@ -30,7 +30,7 @@ export class RandomMatchResolverStrategy implements MatchResolverStrategy {
 
   private createFinishEvent (match: Match): ScheduledEvent {
     const event = new EventMatch({ match, type: EventType.Finish })
-    const eventTime = match.startTime + this.config.matchDuration * 1000
+    const eventTime = match.startTime + this.config.demo.matchDuration * 1000
     return { time: eventTime, event }
   }
 

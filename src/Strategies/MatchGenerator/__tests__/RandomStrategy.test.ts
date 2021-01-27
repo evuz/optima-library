@@ -4,10 +4,11 @@ import { RandomMathGeneratorStrategy } from '../RandomStrategy'
 
 describe('RandomMathGeneratorStrategy', () => {
   let strategy: RandomMathGeneratorStrategy
+  let config: Config
 
   beforeEach(() => {
-    const config: Config = {
-      matchDuration: 10,
+    config = {
+      demo: { matchDuration: 5, timeBetweenMatches: 10 },
       resultsPageSize: null
     }
     strategy = new RandomMathGeneratorStrategy(config)
@@ -23,6 +24,12 @@ describe('RandomMathGeneratorStrategy', () => {
     const teams = Array.from({ length: 13 }).map(() => new Team(<any>{}))
     const matches = strategy.generate(teams)
     expect(matches.length).toEqual(6)
+  })
+
+  test('should generate the matches separated by the corresponding time', () => {
+    const teams = Array.from({ length: 4 }).map(() => new Team(<any>{}))
+    const matches = strategy.generate(teams)
+    expect(matches[1].startTime - matches[0].startTime).toEqual(config.demo.timeBetweenMatches * 1000)
   })
 
   test('should generate differents matches', () => {

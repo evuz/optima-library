@@ -1,6 +1,11 @@
-export interface Config {
+export type DemoConfig = {
+  matchDuration: number
+  timeBetweenMatches: number
+}
+
+export type Config = {
   resultsPageSize: number;
-  matchDuration: number;
+  demo?: DemoConfig;
 }
 
 export function createConfig (configuration: Config): Config {

@@ -28,12 +28,15 @@ export function createDomain (mode: 'demo'): DomainMap['demo']
 export function createDomain (mode: 'manual'): DomainMap['manual']
 export function createDomain (mode: TypesDomain): AllDomain {
   const config: Config = createConfig({
-    matchDuration: 3 * 60, // 3 min
     resultsPageSize: 10
   })
 
   switch (mode) {
     case 'demo':
+      config.demo = {
+        matchDuration: 3 * 60, // 3 min
+        timeBetweenMatches: 30 // 30 sec
+      }
       return createDemoDomain(config)
     case 'manual':
       return createManualDomain(config)

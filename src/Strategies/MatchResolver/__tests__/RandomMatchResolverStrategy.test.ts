@@ -22,7 +22,7 @@ function createMatch (home: string, away: string, date = new Date()) {
 describe('RandomMatchResolverStrategy', () => {
   let strategy: RandomMatchResolverStrategy
   const config: Config = {
-    matchDuration: 60,
+    demo: { matchDuration: 60, timeBetweenMatches: 30 },
     resultsPageSize: null
   }
 
@@ -44,7 +44,7 @@ describe('RandomMatchResolverStrategy', () => {
     const startEvent = events.find(ev => ev.event.type === EventType.Finish)
 
     expect(startEvent).toBeTruthy()
-    expect(startEvent.time).toEqual(match.startTime + config.matchDuration * 1000)
+    expect(startEvent.time).toEqual(match.startTime + config.demo.matchDuration * 1000)
   })
 
   test('should generate 5 actions', () => {

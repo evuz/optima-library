@@ -29,7 +29,9 @@ export class RandomMathGeneratorStrategy implements MatchGeneratorStrategy {
       return
     }
 
-    this.lastMatchTime.setSeconds(this.lastMatchTime.getSeconds() + this.config.matchDuration)
+    const { timeBetweenMatches } = this.config.demo
+
+    this.lastMatchTime.setSeconds(this.lastMatchTime.getSeconds() + timeBetweenMatches)
   }
 
   private shuffle (teams: Team[]) {
