@@ -9,5 +9,8 @@ export * from './Entities/Team'
 export * from './UseCases/FinishedMatchesUseCase'
 export * from './UseCases/ScoreboardUseCase'
 
+/* Teams */
+export * from './Utils/TeamsGenerator'
+
 /* Factory */
 export * from './factory'
